@@ -1,13 +1,13 @@
 package me.ulleo.udacity.learn.popularmovies;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import me.ulleo.udacity.learn.popularmovies.model.SearchParam;
+import me.ulleo.udacity.learn.popularmovies.utils.FetchMoviesTask;
+import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -19,8 +19,9 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
+        //Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("me.ulleo.udacity.learn.popularmovies", appContext.getPackageName());
+        //assertEquals("me.ulleo.udacity.learn.popularmovies", appContext.getPackageName());
+        new FetchMoviesTask().execute(new SearchParam(NetworkUtils.POPULAR,1));
     }
 }
