@@ -8,18 +8,25 @@ import me.ulleo.udacity.learn.popularmovies.model.Movies;
 
 public class DataUtils {
 
-    private static List<Movie> movieList = new ArrayList<>();
+    public static final String SAVED_MOVIE_LIST = "SAVED_MOVIE_LIST";
+    public static final String SAVED_SORT_TYPE = "SAVED_SORT_TYPE";
+    public static final String SAVED_MOVIE_DETAIL = "SAVED_MOVIE_DETAIL";
+    public static final String SEND_MOVIE_DETAIL = "SEND_MOVIE_DETAIL";
 
-    public static List<Movie> getMovies() {
+
+    public static List<Movie> getMovies(List<Movie> movieList) {
         if (movieList == null) {
             movieList = new ArrayList<>();
         }
         return movieList;
     }
 
-    public static void updateMovies(Movies moviesResponse) {
+    public static List<Movie> updateMovies(List<Movie> movieList, Movies moviesResponse) {
+        if (movieList == null) {
+            movieList = new ArrayList<>();
+        }
         if (moviesResponse == null) {
-            return;
+            return movieList;
         }
         List<Movie> tempList = moviesResponse.getMovies();
         if (moviesResponse.getPage() == 1) {
@@ -27,9 +34,10 @@ public class DataUtils {
         } else {
             movieList.addAll(tempList);
         }
+        return movieList;
     }
 
-    public static void clearMovies() {
+    public static void clearMovies(List<Movie> movieList) {
         movieList.clear();
     }
 

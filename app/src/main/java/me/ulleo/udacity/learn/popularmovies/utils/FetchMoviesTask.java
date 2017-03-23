@@ -1,6 +1,7 @@
 package me.ulleo.udacity.learn.popularmovies.utils;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,7 +15,7 @@ import me.ulleo.udacity.learn.popularmovies.model.SearchParam;
 
 public class FetchMoviesTask extends AsyncTask<SearchParam, Void, Movies> {
 
-    private static final String TAG = FetchMoviesTask.class.getSimpleName();
+    private final String TAG = FetchMoviesTask.class.getSimpleName();
 
     private final OnFetchMovieHandler mMovieHandler;
 
@@ -42,6 +43,8 @@ public class FetchMoviesTask extends AsyncTask<SearchParam, Void, Movies> {
 
         try {
             String responseJsonStr = NetworkUtils.getResponseFromHttpUrl(fetchMoviesURL);
+
+            Log.d("response", responseJsonStr);
 
             Gson gson = new GsonBuilder().create();
 
