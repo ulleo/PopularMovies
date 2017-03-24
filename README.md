@@ -1,8 +1,8 @@
-#Popular Movies
+# Popular Movies
 
 Udacity Android Developer Nanodegree. Popular Movies, Stage 1
 
-##Setup
+## Setup
 
 put API_KEY into file `gradle.properties`:
 
