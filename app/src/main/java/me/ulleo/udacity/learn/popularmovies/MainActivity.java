@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             sort = savedInstanceState.getString(DataUtils.SAVED_SORT_TYPE);
         }
 
+        setTitle(sort);
+
         initView();
 
         initMovieItemClickHandler();
@@ -174,11 +176,13 @@ public class MainActivity extends AppCompatActivity {
                 sort = Sort.POPULAR;
                 refreshData();
                 break;
-            case R.id.action_sort_top_rated:
+            case R.id.action_sort_top_voted:
                 sort = Sort.TOP_RATED;
                 refreshData();
                 break;
         }
+
+        setTitle(sort);
 
         return super.onOptionsItemSelected(item);
     }
@@ -187,5 +191,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence(DataUtils.SAVED_SORT_TYPE, sort);
         super.onSaveInstanceState(outState);
+    }
+
+    private void setTitle(String sort) {
+        switch (sort) {
+            case Sort.POPULAR:
+                getSupportActionBar().setTitle("Popular Movies");
+                break;
+            case Sort.TOP_RATED:
+                getSupportActionBar().setTitle("Top Rated Movies");
+        }
+
     }
 }

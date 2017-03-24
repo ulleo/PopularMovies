@@ -1,11 +1,9 @@
 package me.ulleo.udacity.learn.popularmovies;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +11,6 @@ import com.squareup.picasso.Picasso;
 
 import me.ulleo.udacity.learn.popularmovies.data.DataUtils;
 import me.ulleo.udacity.learn.popularmovies.model.Movie;
-import me.ulleo.udacity.learn.popularmovies.utils.DensityUtil;
 import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
 import me.ulleo.udacity.learn.popularmovies.utils.PictureSize;
 
@@ -77,42 +74,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(this).load(backdropImgUrl).into(mImgDetailBackDrop);
         Picasso.with(this).load(posterImgUrl).into(mImgDetailPoster);
 
-        //fixLongTitleDisplay(movie.getTitle());
 
-    }
-
-    private void fixLongTitleDisplay(String text) {
-
-        float mTvDetailTitleTextSizeL = mTvDetailTitleL.getTextSize();
-        int mTvDetailTitleTextSizeLdp = DensityUtil.px2dip(this, mTvDetailTitleTextSizeL);
-        float mTvDetailTitleWidthL = DensityUtil.dip2px(this, 240);
-
-        reSizeTextView(mTvDetailTitleL, text, mTvDetailTitleWidthL, mTvDetailTitleTextSizeLdp);
-
-        Log.d(TAG, "mTvDetailTitleTextSizeL : " + mTvDetailTitleTextSizeL + "\nmTvDetailTitleTextSizeLdp : " + mTvDetailTitleTextSizeLdp);
-
-        float mTvDetailTitleTextSizeS = mTvDetailTitleS.getTextSize();
-        int mTvDetailTitleTextSizeSdp = DensityUtil.px2dip(this, mTvDetailTitleTextSizeS);
-        float mTvDetailTitleWidthS = DensityUtil.dip2px(this, 240);
-
-        reSizeTextView(mTvDetailTitleS, text, mTvDetailTitleWidthS, mTvDetailTitleTextSizeSdp);
-    }
-
-    private void reSizeTextView(TextView textView, String text, float maxWidth, int textSizeInDp) {
-
-        Paint paint = textView.getPaint();
-        float textWidth = paint.measureText(text);
-
-        if (textWidth > maxWidth) {
-            for (; textSizeInDp > 0; textSizeInDp--) {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeInDp);
-                paint = textView.getPaint();
-                textWidth = paint.measureText(text);
-                if (textWidth / 1.5 <= maxWidth) {
-                    break;
-                }
-            }
-        }
-        textView.invalidate();
     }
 }

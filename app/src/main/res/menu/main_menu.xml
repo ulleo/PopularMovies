@@ -13,9 +13,9 @@
         android:title="@string/menu_action_sort_popular"
         app:showAsAction="collapseActionView" />
     <item
-        android:id="@+id/action_sort_top_rated"
+        android:id="@+id/action_sort_top_voted"
         android:orderInCategory="3"
-        android:title="@string/menu_action_sort_top_rated"
+        android:title="@string/menu_action_sort_top_voted"
         app:showAsAction="collapseActionView" />
 
 </menu>

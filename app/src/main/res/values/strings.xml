@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="menu_action_sort_popular">Popular</string>
-    <string name="menu_action_sort_top_rated">Top Rated</string>
+    <string name="menu_action_sort_top_voted">Top Voted</string>
     <string name="loading_failed">Failed</string>
+    <string name="movie_detail">Movie Detail</string>
 </resources>
