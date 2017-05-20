@@ -49,7 +49,11 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
         Movie movie = DataUtils.getMovies(mMovieList).get(position);
         holder.mTextViewMovieTitle.setText(movie.getTitle());
         String picUrl = NetworkUtils.buildPicPath(PictureSize.PIC_NORMAL_185, movie.getPosterPath());
-        Picasso.with(mContext).load(picUrl).into(holder.mImageView);
+        Picasso.with(mContext)
+                .load(picUrl)
+                .placeholder(R.drawable.loading)
+                .error(R.drawable.ic_sentiment_dissatisfied_black_24dp)
+                .into(holder.mImageView);
     }
 
     @Override
