@@ -9,8 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import me.ulleo.udacity.learn.popularmovies.BuildConfig;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public final class NetworkUtils {
@@ -29,10 +33,14 @@ public final class NetworkUtils {
     private static final String LANGUAGE = "en-US";
 
 
-    private final static String PAGE_PARAM = "page";
-    private final static String LANGUAGE_PARAM = "language";
-    private final static String API_KEY_PARAM = "api_key";
+    private static final String PAGE_PARAM = "page";
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String API_KEY_PARAM = "api_key";
 
+    private static final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .build();
 
     public static URL buildUrl(String searchType, int page) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
@@ -73,9 +81,26 @@ public final class NetworkUtils {
      * @throws IOException Related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
+        //return httpURLConnectionRun(url);
+        return okHttpRun(url);
+    }
+
+    private static String okHttpRun(URL url)throws IOException{
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = client.newCall(request).execute();
+        if(response.isSuccessful()){
+            return response.body().string();
+        }else{
+            throw new IOException("Unexpected code " + response);
+        }
+    }
+
+    private static String httpURLConnectionRun(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setConnectTimeout(10000);
-        urlConnection.setReadTimeout(30000);
+        urlConnection.setConnectTimeout(30000);
+        urlConnection.setReadTimeout(10000);
         try {
             InputStream in = urlConnection.getInputStream();
 
