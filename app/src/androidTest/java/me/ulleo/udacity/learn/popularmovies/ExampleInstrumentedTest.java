@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import me.ulleo.udacity.learn.popularmovies.model.SearchParam;
-import me.ulleo.udacity.learn.popularmovies.utils.FetchMoviesTask;
+import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.FetchMoviesTask;
 import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
 
 /**
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         //Context appContext = InstrumentationRegistry.getTargetContext();
 
         //assertEquals("me.ulleo.udacity.learn.popularmovies", appContext.getPackageName());
-        new FetchMoviesTask().execute(new SearchParam(NetworkUtils.POPULAR,1));
+        //new FetchMoviesTask().execute(new SearchParam(NetworkUtils.POPULAR,1));
     }
 }

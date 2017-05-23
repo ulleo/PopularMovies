@@ -2,6 +2,10 @@
     <string name="app_name">Popular Movies</string>
     <string name="menu_action_sort_popular">Popular</string>
     <string name="menu_action_sort_top_voted">Top Voted</string>
+    <string name="menu_action_favourite_movie">My Favourite</string>
     <string name="loading_failed">Failed</string>
+    <string name="loading_refresh">Click to get movies!</string>
     <string name="movie_detail">Movie Detail</string>
+    <string name="favourite">Favourite</string>
+    <string name="not_favourite">Favourite</string>
 </resources>

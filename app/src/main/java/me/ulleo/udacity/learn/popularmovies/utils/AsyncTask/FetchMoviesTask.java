@@ -1,4 +1,4 @@
-package me.ulleo.udacity.learn.popularmovies.utils;
+package me.ulleo.udacity.learn.popularmovies.utils.AsyncTask;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,6 +11,7 @@ import java.net.URL;
 
 import me.ulleo.udacity.learn.popularmovies.model.Movies;
 import me.ulleo.udacity.learn.popularmovies.model.SearchParam;
+import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
 
 
 public class FetchMoviesTask extends AsyncTask<SearchParam, Void, Movies> {

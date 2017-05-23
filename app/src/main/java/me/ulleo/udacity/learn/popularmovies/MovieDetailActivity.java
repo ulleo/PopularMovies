@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import me.ulleo.udacity.learn.popularmovies.data.DataUtils;
 import me.ulleo.udacity.learn.popularmovies.model.Movie;
+import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.UpdateMovieTask;
 import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
 import me.ulleo.udacity.learn.popularmovies.utils.PictureSize;
 
@@ -22,14 +25,18 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private ImageView mImgDetailBackDrop, mImgDetailPoster;
 
+    private Menu mMenu;
+
+    private Movie movie;
+
+    private boolean isFavourite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
         Intent intent = getIntent();
-
-        Movie movie = null;
 
         if (intent != null) {
             if (intent.hasExtra(DataUtils.SEND_MOVIE_DETAIL)) {
@@ -40,6 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         initView();
 
         renderData(movie);
+
 
 
     }
@@ -74,6 +82,66 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(this).load(backdropImgUrl).into(mImgDetailBackDrop);
         Picasso.with(this).load(posterImgUrl).into(mImgDetailPoster);
 
+        isFavourite = movie.isFavourite();
 
+    }
+
+    private void setFavourite(Movie movie) {
+
+        movie.setFavourite(!isFavourite);
+
+        new UpdateMovieTask(new UpdateMovieTask.OnUpdateMovieHandler() {
+            @Override
+            public void onPreExecute() {
+
+            }
+
+            @Override
+            public void onPostExecute(Boolean success) {
+                if (success) {
+                    isFavourite = !isFavourite;
+                    setFavouriteIcon(isFavourite);
+                } else {
+                    Log.i(TAG, "Save Favourite Failed");
+                }
+            }
+        }).execute(movie);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
+        mMenu = menu;
+        setFavouriteIcon(isFavourite);
+        return true;
+    }
+
+    private void setFavouriteIcon(boolean isFavourite) {
+        if (isFavourite) {
+            mMenu.findItem(R.id.action_is_favourite).setVisible(true);
+            mMenu.findItem(R.id.action_not_favourite).setVisible(false);
+        } else {
+            mMenu.findItem(R.id.action_is_favourite).setVisible(false);
+            mMenu.findItem(R.id.action_not_favourite).setVisible(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        switch (item.getItemId()) {
+            case R.id.action_is_favourite:
+                Log.i(TAG, isFavourite + " is");
+                setFavourite(movie);
+                break;
+            case R.id.action_not_favourite:
+                Log.i(TAG, isFavourite + " not");
+                setFavourite(movie);
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }

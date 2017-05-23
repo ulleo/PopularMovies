@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +18,11 @@ import java.util.ArrayList;
 import me.ulleo.udacity.learn.popularmovies.data.DataUtils;
 import me.ulleo.udacity.learn.popularmovies.model.Movie;
 import me.ulleo.udacity.learn.popularmovies.model.Movies;
+import me.ulleo.udacity.learn.popularmovies.model.ReadParam;
 import me.ulleo.udacity.learn.popularmovies.model.SearchParam;
-import me.ulleo.udacity.learn.popularmovies.utils.FetchMoviesTask;
+import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.FetchMoviesTask;
+import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.ReadMoviesTask;
+import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.SaveMoviesTask;
 import me.ulleo.udacity.learn.popularmovies.utils.Sort;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout mLoadingFailedLayout;
 
+    private FrameLayout mLoadingRefreshLayout;
+
     private MoviesRecyclerViewAdapter mMoviesRecyclerViewAdapter;
 
     private MoviesRecyclerViewAdapter.OnMovieItemClickHandler mMovieItemClickHandler;
@@ -37,20 +43,29 @@ public class MainActivity extends AppCompatActivity {
 
     private int page = 1;
 
+    private boolean isFavourite = false;
+
+    private int tempPosition = 0;
+
+    private static final String TEMP_POSITION = "temp_position";
+
     private String sort = Sort.POPULAR;
 
     private ArrayList<Movie> mMovieList;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(DataUtils.SAVED_SORT_TYPE)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(DataUtils.SAVED_SORT_TYPE) && savedInstanceState.containsKey(TEMP_POSITION)) {
             sort = savedInstanceState.getString(DataUtils.SAVED_SORT_TYPE);
+            tempPosition = savedInstanceState.getInt(TEMP_POSITION);
         }
 
-        setTitle(sort);
+        setTitle(sort, isFavourite);
 
         initView();
 
@@ -58,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         setRecyclerView();
 
-        loadData();
+        loadLocalData();
 
     }
 
@@ -69,10 +84,20 @@ public class MainActivity extends AppCompatActivity {
 
         mLoadingFailedLayout = (FrameLayout) findViewById(R.id.layout_loading_failed);
 
+        mLoadingRefreshLayout = (FrameLayout) findViewById(R.id.layout_loading_refresh);
+
         mLoadingFailedLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshData();
+                //refreshData();
+                loadData();
+            }
+        });
+
+        mLoadingRefreshLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadData();
             }
         });
 
@@ -82,13 +107,13 @@ public class MainActivity extends AppCompatActivity {
 
         mMovieItemClickHandler = new MoviesRecyclerViewAdapter.OnMovieItemClickHandler() {
             @Override
-            public void onClick(Movie movie) {
+            public void onClick(Movie movie, int position) {
                 /*if (mToast != null) {
                     mToast.cancel();
                 }
                 mToast = Toast.makeText(MainActivity.this, movie.toString(), Toast.LENGTH_SHORT);
                 mToast.show();*/
-
+                tempPosition = position;
                 Intent openDetailIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
                 openDetailIntent.putExtra(DataUtils.SEND_MOVIE_DETAIL, movie);
                 startActivity(openDetailIntent);
@@ -110,6 +135,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
 
+        if (isFavourite) {
+            loadLocalData();
+            return;
+        }
+
         SearchParam searchParam = new SearchParam(sort, page);
 
         new FetchMoviesTask(new FetchMoviesTask.OnFetchMovieHandler() {
@@ -122,18 +152,73 @@ public class MainActivity extends AppCompatActivity {
             public void onPostExecute(Movies movies) {
                 if (movies == null) {
                     showFailedView();
+                    Log.i(TAG, "Fetch Data Failed");
                 } else {
-                    showSuccessedView();
+                    //showSuccessedView();
+                    Log.i(TAG, "movies sort:" + movies.getSearchType());
+                    saveData(movies);
                 }
-                displayData(movies);
+                //displayData(movies);
             }
         }).execute(searchParam);
 
     }
 
+    private void loadLocalData() {
+
+        ReadParam readParam = new ReadParam(sort, isFavourite);
+
+        new ReadMoviesTask(new ReadMoviesTask.OnReadMovieHandler() {
+            @Override
+            public void onPreExecute() {
+
+            }
+
+            @Override
+            public void onPostExecute(Movies movies) {
+                if (movies == null) {
+                    showFailedView();
+                    Log.i(TAG, "Load Local Data Failed");
+                } else {
+                    if (movies.getMovies().size() > 0) {
+                        showSuccessedView();
+                    } else {
+                        showRefreshView();
+                    }
+                }
+                displayData(movies);
+
+                if (tempPosition != 0) {
+                    mMoviesRecyclerView.scrollToPosition(tempPosition);
+                    tempPosition = 0;
+                }
+            }
+        }).execute(readParam);
+    }
+
+    private void saveData(Movies movies) {
+        new SaveMoviesTask(new SaveMoviesTask.OnSaveMovieHandler() {
+            @Override
+            public void onPreExecute() {
+
+            }
+
+            @Override
+            public void onPostExecute(Boolean success) {
+                if (success) {
+                    loadLocalData();
+                } else {
+                    showFailedView();
+                    Log.i(TAG, "Save Data Failed");
+                }
+            }
+        }).execute(movies);
+    }
+
     private void refreshData() {
         clearList();
-        loadData();
+        //loadData();
+        loadLocalData();
     }
 
     private void displayData(Movies movies) {
@@ -146,18 +231,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void showLoadingView() {
         mLoadingFailedLayout.setVisibility(View.INVISIBLE);
+        mLoadingRefreshLayout.setVisibility(View.INVISIBLE);
         mPbLoading.setVisibility(View.VISIBLE);
         mMoviesRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     private void showSuccessedView() {
         mLoadingFailedLayout.setVisibility(View.INVISIBLE);
+        mLoadingRefreshLayout.setVisibility(View.INVISIBLE);
         mPbLoading.setVisibility(View.INVISIBLE);
         mMoviesRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showFailedView() {
         mLoadingFailedLayout.setVisibility(View.VISIBLE);
+        mLoadingRefreshLayout.setVisibility(View.INVISIBLE);
+        mPbLoading.setVisibility(View.INVISIBLE);
+        mMoviesRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    private void showRefreshView() {
+        mLoadingFailedLayout.setVisibility(View.INVISIBLE);
+        if (isFavourite) {
+            mLoadingRefreshLayout.setVisibility(View.INVISIBLE);
+        } else {
+            mLoadingRefreshLayout.setVisibility(View.VISIBLE);
+        }
         mPbLoading.setVisibility(View.INVISIBLE);
         mMoviesRecyclerView.setVisibility(View.INVISIBLE);
     }
@@ -165,6 +264,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        if (isFavourite) {
+            menu.findItem(R.id.action_favourite_movie).setIcon(R.drawable.ic_favorite_24dp);
+        } else {
+            menu.findItem(R.id.action_favourite_movie).setIcon(R.drawable.ic_favorite_border_24dp);
+        }
+
         return true;
     }
 
@@ -174,15 +279,26 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_sort_popular:
                 sort = Sort.POPULAR;
+                //isFavourite = false;
                 refreshData();
                 break;
             case R.id.action_sort_top_voted:
                 sort = Sort.TOP_RATED;
+                //isFavourite = false;
+                refreshData();
+                break;
+            case R.id.action_favourite_movie:
+                isFavourite = !isFavourite;
+                if (isFavourite) {
+                    item.setIcon(R.drawable.ic_favorite_24dp);
+                } else {
+                    item.setIcon(R.drawable.ic_favorite_border_24dp);
+                }
                 refreshData();
                 break;
         }
 
-        setTitle(sort);
+        setTitle(sort, isFavourite);
 
         return super.onOptionsItemSelected(item);
     }
@@ -190,10 +306,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence(DataUtils.SAVED_SORT_TYPE, sort);
+        outState.putInt(TEMP_POSITION, tempPosition);
+
         super.onSaveInstanceState(outState);
     }
 
-    private void setTitle(String sort) {
+    private void setTitle(String sort, boolean favourite) {
+
+        if (favourite) {
+            getSupportActionBar().setTitle("My Favourite");
+            return;
+        }
+
         switch (sort) {
             case Sort.POPULAR:
                 getSupportActionBar().setTitle("Popular Movies");

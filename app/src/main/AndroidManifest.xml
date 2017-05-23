@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:name=".MovieApplication"
         >
         <activity
             android:name=".MainActivity"
@@ -29,6 +30,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="me.ulleo.udacity.learn.popularmovies"
+            android:name=".data.MovieProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

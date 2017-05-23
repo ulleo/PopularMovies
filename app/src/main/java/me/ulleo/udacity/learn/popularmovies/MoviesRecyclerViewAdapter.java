@@ -35,7 +35,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     }
 
     public interface OnMovieItemClickHandler {
-        void onClick(Movie movie);
+        void onClick(Movie movie, int position);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
         public void onClick(View v) {
             int position = getAdapterPosition();
             Movie movie = DataUtils.getMovies(mMovieList).get(position);
-            clickHandler.onClick(movie);
+            clickHandler.onClick(movie, position);
         }
     }
 

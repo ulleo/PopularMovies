@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+   <!--<item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="1"
+        android:title="Refresh"
+        app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/action_not_favourite"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_favorite_border_24dp"
+        android:title="@string/loading_failed"
+        app:showAsAction="ifRoom"
+        android:visible="true"/>
+    <item
+        android:id="@+id/action_is_favourite"
+        android:orderInCategory="3"
+        android:icon="@drawable/ic_favorite_24dp"
+        android:title="@string/loading_failed"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+
+
+</menu>

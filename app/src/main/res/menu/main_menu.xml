@@ -17,5 +17,11 @@
         android:orderInCategory="3"
         android:title="@string/menu_action_sort_top_voted"
         app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_favourite_movie"
+        android:orderInCategory="3"
+        android:title="@string/menu_action_favourite_movie"
+        android:icon="@drawable/ic_favorite_24dp"
+        app:showAsAction="ifRoom" />
 
 </menu>

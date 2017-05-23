@@ -22,6 +22,19 @@
     <FrameLayout
         android:id="@+id/layout_loading_failed"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_sentiment_dissatisfied_black_24dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_loading_refresh"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
@@ -29,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif"
-            android:text="@string/loading_failed"
+            android:text="@string/loading_refresh"
             android:textSize="30sp" />
     </FrameLayout>
 
