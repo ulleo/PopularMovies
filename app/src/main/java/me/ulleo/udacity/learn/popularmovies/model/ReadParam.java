@@ -29,6 +29,10 @@ public class ReadParam {
         this.movieId = movieId;
     }
 
+    public ReadParam(int movieId) {
+        this.movieId = movieId;
+    }
+
     private void checkOrder(String sort) {
         if (sort.equals(Sort.TOP_RATED)) {
             this.sort = MovieProvider.SORT_RATED;

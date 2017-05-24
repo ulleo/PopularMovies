@@ -13,6 +13,9 @@ import com.squareup.picasso.Picasso;
 
 import me.ulleo.udacity.learn.popularmovies.data.DataUtils;
 import me.ulleo.udacity.learn.popularmovies.model.Movie;
+import me.ulleo.udacity.learn.popularmovies.model.Movies;
+import me.ulleo.udacity.learn.popularmovies.model.ReadParam;
+import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.ReadMoviesTask;
 import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.UpdateMovieTask;
 import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
 import me.ulleo.udacity.learn.popularmovies.utils.PictureSize;
@@ -49,7 +52,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         renderData(movie);
 
 
-
     }
 
     private void initView() {
@@ -69,20 +71,44 @@ public class MovieDetailActivity extends AppCompatActivity {
             Log.e(TAG, "movie is null,cannot render detail!");
             return;
         }
-        String backdropImgUrl = NetworkUtils.buildPicPath(PictureSize.PIC_LARGE_500, movie.getBackdropPath());
-        String posterImgUrl = NetworkUtils.buildPicPath(PictureSize.PIC_NORMAL_185, movie.getPosterPath());
 
-        mTvDetailTitleL.setText(movie.getTitle());
-        mTvDetailTitleS.setText(movie.getTitle());
-        mTvDetailReleaseDate.setText(movie.getReleaseDate());
-        mTvDetailOriginTitle.setText(movie.getOriginalTitle());
-        mTvDetailAverageVote.setText(String.valueOf(movie.getVoteAverage()));
-        mTvDetailOverview.setText(movie.getOverview());
+        ReadParam readParam = new ReadParam(movie.getId());
 
-        Picasso.with(this).load(backdropImgUrl).into(mImgDetailBackDrop);
-        Picasso.with(this).load(posterImgUrl).into(mImgDetailPoster);
+        new ReadMoviesTask(new ReadMoviesTask.OnReadMoviesHandler() {
+            @Override
+            public void onPreExecute() {
 
-        isFavourite = movie.isFavourite();
+            }
+
+            @Override
+            public void onPostExecute(Movies movies) {
+                if (movies == null || movies.getMovies().size() == 0) {
+                    Log.e(TAG, "movie is null,cannot render detail!");
+                    return;
+                }
+
+                Movie movie = movies.getMovies().get(0);
+
+                String backdropImgUrl = NetworkUtils.buildPicPath(PictureSize.PIC_LARGE_500, movie.getBackdropPath());
+                String posterImgUrl = NetworkUtils.buildPicPath(PictureSize.PIC_NORMAL_185, movie.getPosterPath());
+
+                mTvDetailTitleL.setText(movie.getTitle());
+                mTvDetailTitleS.setText(movie.getTitle());
+                mTvDetailReleaseDate.setText(movie.getReleaseDate());
+                mTvDetailOriginTitle.setText(movie.getOriginalTitle());
+                mTvDetailAverageVote.setText(String.valueOf(movie.getVoteAverage()));
+                mTvDetailOverview.setText(movie.getOverview());
+
+                Picasso.with(MovieDetailActivity.this).load(backdropImgUrl).into(mImgDetailBackDrop);
+                Picasso.with(MovieDetailActivity.this).load(posterImgUrl).into(mImgDetailPoster);
+
+                isFavourite = movie.isFavourite();
+
+                setFavouriteIcon(isFavourite);
+
+            }
+        }).execute(readParam);
+
 
     }
 
@@ -117,6 +143,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void setFavouriteIcon(boolean isFavourite) {
+        if (mMenu == null) {
+            return;
+        }
         if (isFavourite) {
             mMenu.findItem(R.id.action_is_favourite).setVisible(true);
             mMenu.findItem(R.id.action_not_favourite).setVisible(false);

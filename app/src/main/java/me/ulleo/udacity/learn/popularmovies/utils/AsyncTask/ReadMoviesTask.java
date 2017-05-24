@@ -19,15 +19,15 @@ public class ReadMoviesTask extends AsyncTask<ReadParam, Void, Movies> {
 
     private final String TAG = ReadMoviesTask.class.getSimpleName();
 
-    private final OnReadMovieHandler mMovieHandler;
+    private final OnReadMoviesHandler mMovieHandler;
 
-    public interface OnReadMovieHandler {
+    public interface OnReadMoviesHandler {
         void onPreExecute();
 
         void onPostExecute(Movies movies);
     }
 
-    public ReadMoviesTask(OnReadMovieHandler onReadMovieHandler) {
+    public ReadMoviesTask(OnReadMoviesHandler onReadMovieHandler) {
         mMovieHandler = onReadMovieHandler;
     }
 

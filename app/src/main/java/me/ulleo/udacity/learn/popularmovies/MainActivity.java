@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout mLoadingRefreshLayout;
 
+    private GridLayoutManager gridLayoutManager;
     private MoviesRecyclerViewAdapter mMoviesRecyclerViewAdapter;
 
     private MoviesRecyclerViewAdapter.OnMovieItemClickHandler mMovieItemClickHandler;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private int tempPosition = 0;
 
     private static final String TEMP_POSITION = "temp_position";
+    private static final String TEMP_FAVOURITE = "temp_favourite";
 
     private String sort = Sort.POPULAR;
 
@@ -60,9 +62,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(DataUtils.SAVED_SORT_TYPE) && savedInstanceState.containsKey(TEMP_POSITION)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(DataUtils.SAVED_SORT_TYPE) && savedInstanceState.containsKey(TEMP_POSITION) && savedInstanceState.containsKey(TEMP_FAVOURITE)) {
             sort = savedInstanceState.getString(DataUtils.SAVED_SORT_TYPE);
             tempPosition = savedInstanceState.getInt(TEMP_POSITION);
+            isFavourite = savedInstanceState.getBoolean(TEMP_FAVOURITE);
         }
 
         setTitle(sort, isFavourite);
@@ -107,13 +110,12 @@ public class MainActivity extends AppCompatActivity {
 
         mMovieItemClickHandler = new MoviesRecyclerViewAdapter.OnMovieItemClickHandler() {
             @Override
-            public void onClick(Movie movie, int position) {
+            public void onClick(Movie movie) {
                 /*if (mToast != null) {
                     mToast.cancel();
                 }
                 mToast = Toast.makeText(MainActivity.this, movie.toString(), Toast.LENGTH_SHORT);
                 mToast.show();*/
-                tempPosition = position;
                 Intent openDetailIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
                 openDetailIntent.putExtra(DataUtils.SEND_MOVIE_DETAIL, movie);
                 startActivity(openDetailIntent);
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setRecyclerView() {
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+        gridLayoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
 
         mMoviesRecyclerView.setLayoutManager(gridLayoutManager);
         mMoviesRecyclerView.setHasFixedSize(true);
@@ -168,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         ReadParam readParam = new ReadParam(sort, isFavourite);
 
-        new ReadMoviesTask(new ReadMoviesTask.OnReadMovieHandler() {
+        new ReadMoviesTask(new ReadMoviesTask.OnReadMoviesHandler() {
             @Override
             public void onPreExecute() {
 
@@ -306,8 +308,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence(DataUtils.SAVED_SORT_TYPE, sort);
+        tempPosition = gridLayoutManager.findFirstVisibleItemPosition();
         outState.putInt(TEMP_POSITION, tempPosition);
-
+        outState.putBoolean(TEMP_FAVOURITE, isFavourite);
         super.onSaveInstanceState(outState);
     }
 
