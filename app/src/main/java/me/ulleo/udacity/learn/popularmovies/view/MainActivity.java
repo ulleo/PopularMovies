@@ -1,4 +1,4 @@
-package me.ulleo.udacity.learn.popularmovies;
+package me.ulleo.udacity.learn.popularmovies.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import me.ulleo.udacity.learn.popularmovies.R;
 import me.ulleo.udacity.learn.popularmovies.data.DataUtils;
 import me.ulleo.udacity.learn.popularmovies.model.Movie;
 import me.ulleo.udacity.learn.popularmovies.model.Movies;
@@ -24,6 +25,7 @@ import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.FetchMoviesTask;
 import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.ReadMoviesTask;
 import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.SaveMoviesTask;
 import me.ulleo.udacity.learn.popularmovies.utils.Sort;
+import me.ulleo.udacity.learn.popularmovies.view.adapter.MoviesRecyclerViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

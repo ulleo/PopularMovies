@@ -27,6 +27,9 @@ public final class NetworkUtils {
 
     private static final String API_VERSION = "3";
 
+    private static final String MOVIE = "movie";
+    private static final String VIDEO = "videos";
+    private static final String REVIEW = "reviews";
 
     private static final String API_KEY = BuildConfig.API_KEY;
 
@@ -46,6 +49,74 @@ public final class NetworkUtils {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendPath(API_VERSION)
                 .appendEncodedPath(searchType)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
+                .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    public static URL buildMoviesUrl(int id, int page) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(API_VERSION)
+                .appendEncodedPath(MOVIE)
+                .appendEncodedPath(String.valueOf(id))
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
+                .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    public static URL buildVideosUrl(int id, int page) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(API_VERSION)
+                .appendEncodedPath(MOVIE)
+                .appendEncodedPath(String.valueOf(id))
+                .appendEncodedPath(VIDEO)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
+                .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    public static URL buildReviewsUrl(int id, int page) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(API_VERSION)
+                .appendEncodedPath(MOVIE)
+                .appendEncodedPath(String.valueOf(id))
+                .appendEncodedPath(REVIEW)
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
                 .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
@@ -85,14 +156,14 @@ public final class NetworkUtils {
         return okHttpRun(url);
     }
 
-    private static String okHttpRun(URL url)throws IOException{
+    private static String okHttpRun(URL url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
         Response response = client.newCall(request).execute();
-        if(response.isSuccessful()){
+        if (response.isSuccessful()) {
             return response.body().string();
-        }else{
+        } else {
             throw new IOException("Unexpected code " + response);
         }
     }

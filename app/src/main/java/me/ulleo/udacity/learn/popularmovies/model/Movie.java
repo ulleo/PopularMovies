@@ -62,6 +62,9 @@ public class Movie implements Parcelable {
     @Expose
     private double voteAverage;
 
+    @Expose
+    private int runtime;
+
     private boolean favourite;
 
     public Movie() {
@@ -81,6 +84,7 @@ public class Movie implements Parcelable {
         voteCount = in.readInt();
         video = in.readByte() != 0;
         voteAverage = in.readDouble();
+        runtime = in.readInt();
         favourite = in.readByte() != 0;
     }
 
@@ -208,6 +212,14 @@ public class Movie implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
     public boolean isFavourite() {
         return favourite;
     }
@@ -215,7 +227,7 @@ public class Movie implements Parcelable {
     public void setFavourite(boolean favourite) {
         this.favourite = favourite;
     }
-    
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -233,6 +245,7 @@ public class Movie implements Parcelable {
                 ", voteCount=" + voteCount +
                 ", video=" + video +
                 ", voteAverage=" + voteAverage +
+                ", runtime=" + runtime +
                 ", favourite=" + favourite +
                 '}';
     }
@@ -257,6 +270,7 @@ public class Movie implements Parcelable {
         dest.writeInt(voteCount);
         dest.writeByte((byte) (video ? 1 : 0));
         dest.writeDouble(voteAverage);
+        dest.writeInt(runtime);
         dest.writeByte((byte) (favourite ? 1 : 0));
     }
 }

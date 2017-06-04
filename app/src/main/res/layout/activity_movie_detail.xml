@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="me.ulleo.udacity.learn.popularmovies.MovieDetailActivity">
+    tools:context="me.ulleo.udacity.learn.popularmovies.view.MovieDetailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,6 +78,12 @@
                     android:layout_height="wrap_content"
                     tools:text="2016" />
 
+                <TextView
+                    android:id="@+id/tv_movie_detail_runtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="134min" />
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -104,6 +110,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             tools:text="overview" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_video_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_remark_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 

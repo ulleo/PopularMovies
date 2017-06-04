@@ -1,4 +1,4 @@
-package me.ulleo.udacity.learn.popularmovies;
+package me.ulleo.udacity.learn.popularmovies.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.ulleo.udacity.learn.popularmovies.R;
 import me.ulleo.udacity.learn.popularmovies.data.DataUtils;
 import me.ulleo.udacity.learn.popularmovies.model.Movie;
 import me.ulleo.udacity.learn.popularmovies.model.Movies;
