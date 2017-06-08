@@ -5,10 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import me.ulleo.udacity.learn.popularmovies.model.SearchParam;
-import me.ulleo.udacity.learn.popularmovies.utils.AsyncTask.FetchMoviesTask;
-import me.ulleo.udacity.learn.popularmovies.utils.NetworkUtils;
-
 /**
  * Instrumentation test, which will execute on an Android device.
  *

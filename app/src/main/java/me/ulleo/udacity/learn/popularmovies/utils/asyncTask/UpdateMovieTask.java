@@ -1,4 +1,4 @@
-package me.ulleo.udacity.learn.popularmovies.utils.AsyncTask;
+package me.ulleo.udacity.learn.popularmovies.utils.asyncTask;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
